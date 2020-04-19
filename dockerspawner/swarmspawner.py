@@ -247,7 +247,13 @@ class SwarmSpawner(DockerSpawner):
         dt = 1.0
 
         while True:
-            service = yield self.get_task()
+            # Wait for 10 seconds for service to start
+            for i in range(0,10):
+                yield gen.sleep(dt)
+                service = yield self.get_task()
+                if service:
+                    break
+
             if not service:
                 raise RuntimeError("Service %s not found" % self.service_name)
 
