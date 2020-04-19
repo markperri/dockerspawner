@@ -1,5 +1,5 @@
 """
-A Spawner for JupyterHub that runs each user's server in a separate docker service
+info Spawner for JupyterHub that runs each user's server in a separate docker service
 """
 
 from pprint import pformat
@@ -247,8 +247,8 @@ class SwarmSpawner(DockerSpawner):
         dt = 1.0
 
         while True:
-            # Wait for 10 seconds for service to start
-            for i in range(0,10):
+            # Wait for 60 seconds for service to start
+            for i in range(0,60):
                 yield gen.sleep(dt)
                 service = yield self.get_task()
                 if service:
@@ -260,6 +260,7 @@ class SwarmSpawner(DockerSpawner):
             status = service["Status"]
             state = status["State"].lower()
             self.log.debug("Service %s state: %s", self.service_id[:7], state)
+            self.log.info("Service %s state: %s", self.service_id[:7], state)
             if state in {"new", "assigned", "accepted", "starting", "pending", "preparing"}:
                 # not ready yet, wait before checking again
                 yield gen.sleep(dt)
